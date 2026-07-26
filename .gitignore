@@ -1,0 +1,28 @@
+# Binaries
+dagu-logs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test / coverage
+*.test
+coverage.out
+*.coverprofile
+*.prof
+
+# Go workspace
+go.work
+go.work.sum
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local tooling
+.claude/
