@@ -43,7 +43,8 @@ type dagYAML struct {
 
 func parseDagFile(file string) (name string, steps []stepYAML) {
 	abs, _ := filepath.Abs(file)
-	data, err := os.ReadFile(abs)
+	// User-supplied DAG path from CLI args; this tool's purpose is to read it.
+	data, err := os.ReadFile(abs) // #nosec G304 G703
 	base := filepath.Base(file)
 	base = strings.TrimSuffix(base, filepath.Ext(base))
 	if err != nil {
@@ -152,7 +153,8 @@ func tailFile(path, stepName string, color pterm.Color, totalSteps int, showHear
 	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
 		var err error
-		f, err = os.Open(path)
+		// path is under Dagu's log directory discovered by this process.
+		f, err = os.Open(path) // #nosec G304 G703
 		if err == nil {
 			break
 		}
@@ -165,7 +167,7 @@ func tailFile(path, stepName string, color pterm.Color, totalSteps int, showHear
 	if f == nil {
 		return
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	stepNum := -1
 	hasRealOutput := false
@@ -361,7 +363,8 @@ func resolveRelativePaths(args []string) []string {
 }
 
 func passthrough(args []string) {
-	cmd := exec.Command("dagu", args...)
+	// Fixed binary "dagu"; args are the user's own CLI invocation (passthrough wrapper).
+	cmd := exec.Command("dagu", args...) // #nosec G204 G702
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -397,7 +400,8 @@ func main() {
 	totalSteps := len(steps)
 	logsBase := filepath.Join(os.Getenv("HOME"), ".local", "share", "dagu", "logs")
 
-	cmd := exec.Command("dagu", args...)
+	// Fixed binary "dagu"; args are the user's own CLI invocation.
+	cmd := exec.Command("dagu", args...) // #nosec G204 G702
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout // direct: dagu writes tree at end only; colors preserved
 	cmd.Stderr = io.Discard // suppress spinner (fixes alignment)
@@ -438,8 +442,14 @@ func main() {
 	// their own bare run_* directory at the logs root (not forwarded to parent).
 	go watchSubDagErrFiles(logsBase, startedAt, stop)
 
-	cmd.Wait()
+	waitErr := cmd.Wait()
 	time.Sleep(500 * time.Millisecond)
 	closeStop()
 	time.Sleep(200 * time.Millisecond)
+	if waitErr != nil {
+		if ee, ok := waitErr.(*exec.ExitError); ok {
+			os.Exit(ee.ExitCode())
+		}
+		os.Exit(1)
+	}
 }

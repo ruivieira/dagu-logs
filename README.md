@@ -4,7 +4,7 @@
 [![Go](https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white)](https://go.dev/)
 
 <p align="center">
-  <img src="docs/image.jpg" alt="dagu-logs" width="720" />
+  <img src="docs/image.jpg" alt="dagu-logs" width="500" />
 </p>
 
 Minimal CLI app to colour and live-tail Dagu DAG step logs. When you run `dagu-logs start …`, it starts Dagu as usual and streams each step’s `.out` / sub-DAG `.err` output with progress labels instead of waiting for the final tree.

@@ -43,9 +43,9 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - uses: golangci/golangci-lint-action@v7
+      - uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.1.6
+          version: v2.12.2
 
   gosec:
     name: gosec
@@ -56,10 +56,10 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
       - name: Run gosec
-        uses: securego/gosec@master
-        with:
-          args: ./...
+        run: gosec ./...
 
   vulncheck:
     name: vulncheck
