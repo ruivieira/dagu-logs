@@ -2,6 +2,7 @@
 
 [![ci](https://github.com/ruivieira/dagu-logs/actions/workflows/ci.yml/badge.svg)](https://github.com/ruivieira/dagu-logs/actions/workflows/ci.yml)
 [![Go](https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white)](https://go.dev/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 <p align="center">
   <img src="docs/image.jpg" alt="dagu-logs" width="500" />
@@ -52,3 +53,7 @@ go test ./... -race -count=1
 ```
 
 CI runs tests, `go vet`, golangci-lint, gosec, and govulncheck on every push and pull request.
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
